@@ -17,16 +17,16 @@ def prepare_games_list_keyboard(games_json: dict) -> tuple[ReplyKeyboardMarkup, 
         game_date: str = el.get("Когда")
         game_date: datetime.datetime = datetime.datetime.strptime(game_date, date_format)
         if game_date >= datetime.datetime.today():
-            events_data[f"{el.get("Что")} | {el.get("Когда")}"] = {
+            events_data[f"{el.get('Что')} | {el.get('Когда')}"] = {
                 "Что": el.get("Что"), 
                 "Когда": el.get("Когда"), 
                 "Где": el.get("Где"), 
                 "Состав": el.get("Состав")
             }
             if count_games % 2 == 0:
-                prev_game = KeyboardButton(f"{el.get("Что")} | {el.get("Когда")}")
+                prev_game = KeyboardButton(f"{el.get('Что')} | {el.get('Когда')}")
             else:
-                keyboard.row(prev_game, KeyboardButton(f"{el.get("Что")} | {el.get("Когда")}"))
+                keyboard.row(prev_game, KeyboardButton(f"{el.get('Что')} | {el.get('Когда')}"))
             count_games += 1
     keyboard.row(KeyboardButton("Главное меню"))
     return keyboard, events_data
