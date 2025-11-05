@@ -4,17 +4,45 @@ import config
 import constants
 import helpers
 import keyboards
-import requests
 
 bot = config.bot
 
 
 @bot.message_handler(commands=['help', 'start'])
 def start(message):
-    bot.send_message(
-        chat_id=message.chat.id,
-        text="Выберите функцию",
-        reply_markup=keyboards.MainMenu.keyboard
+    chat_type = message.chat.type
+    if chat_type == "private":
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Выберите функцию",
+            reply_markup=keyboards.MainMenu.keyboard
+        )
+    else:
+        bot.reply_to(
+            message=message,
+            text="Я знаю эту команду, но отвечаю на нее только в личке. Чтобы не спамить в чате :)"
+        )
+
+
+@bot.message_handler(commands=["calendar"])
+def echo_games(message):
+    _, events = helpers.get_games_schedule_data()
+    prepared_answer = "<b>Вот список ближайших игр:</b> \n"
+    for event in events:
+        prepared_answer += f"* {event}\n"
+    bot.reply_to(
+        message=message,
+        text=prepared_answer,
+        parse_mode="HTML"
+    )
+
+@bot.message_handler(commands=["table"])
+def echo_table(message):
+    prepared_answer = f"Тебе нужна ссылка на таблицу?\n <a href='{constants.Links.team_table}'>Держи!</a>"
+    bot.reply_to(
+        message=message,
+        text=prepared_answer,
+        parse_mode="HTML"
     )
 
 
@@ -33,20 +61,14 @@ def handle_text(message):
             reply_markup=keyboards.MainMenu.keyboard
         )
     elif message.text == "📇 Список ближайших игр":
-        all_games_response = requests.get(config.TABLE_API.token)
-        all_games_response.encoding = "utf-8"
-        all_games_data = all_games_response.json()
-        games_keyboard, _ = helpers.prepare_games_list_keyboard(all_games_data)
+        games_keyboard, _ = helpers.get_games_schedule_data()
         bot.send_message(
             chat_id=message.chat.id,
             text="Вот список ближайших игр",
             reply_markup=games_keyboard
         )
     else:
-        all_games_response = requests.get(config.TABLE_API.token)
-        all_games_response.encoding = "utf-8"
-        all_games_data = all_games_response.json()
-        games_keyboard, events_list = helpers.prepare_games_list_keyboard(all_games_data)
+        games_keyboard, events_list = helpers.get_games_schedule_data()
         events_names = events_list.keys()
         if message.text in events_names:
             current_event = events_list.get(message.text)
