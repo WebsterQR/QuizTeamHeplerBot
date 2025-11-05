@@ -1,7 +1,6 @@
 # pylint: disable=line-too-long
 
 import config
-import keyboards
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 import datetime
 
@@ -18,9 +17,9 @@ def prepare_games_list_keyboard(games_json: dict) -> tuple[ReplyKeyboardMarkup, 
         game_date: datetime.datetime = datetime.datetime.strptime(game_date, date_format)
         if game_date >= datetime.datetime.today():
             events_data[f"{el.get('Что')} | {el.get('Когда')}"] = {
-                "Что": el.get("Что"), 
-                "Когда": el.get("Когда"), 
-                "Где": el.get("Где"), 
+                "Что": el.get("Что"),
+                "Когда": el.get("Когда"),
+                "Где": el.get("Где"),
                 "Состав": el.get("Состав")
             }
             if count_games % 2 == 0:

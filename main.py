@@ -17,6 +17,7 @@ def start(message):
         reply_markup=keyboards.NewMainMenu.keyboard
     )
 
+
 @bot.message_handler(content_types=["text"])
 def handle_text(message):
     if message.text == "Главное меню":
@@ -56,7 +57,7 @@ def handle_text(message):
                 reply_markup=keyboards.MainMenu.keyboard,
                 parse_mode="HTML"
             )
-        
+
 
 while True:
     try:
