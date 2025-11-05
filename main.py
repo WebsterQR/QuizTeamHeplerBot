@@ -5,6 +5,7 @@ import constants
 import database
 import helpers
 import keyboards
+import requests
 
 # bot = telebot.TeleBot(config.Telegram.TOKEN)
 bot = config.bot
@@ -14,10 +15,52 @@ bot = config.bot
 def start(message):
     bot.send_message(
         chat_id=message.chat.id,
-        text=constants.TextTemplates.message_before_auth,
-        reply_markup=keyboards.Register.keyboard
+        text="Выберите функцию",
+        reply_markup=keyboards.NewMainMenu.keyboard
     )
 
+@bot.message_handler(content_types=["text"])
+def handle_text(message):
+    if message.text == "Главное меню":
+        print("111")
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Выберите функцию",
+            reply_markup=keyboards.NewMainMenu.keyboard
+        )
+    if message.text == "🗂 Таблица игр в GoogleSheets":
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Если нужна таблица в гугл таблицах, то вот ссылка <link>",
+            reply_markup=keyboards.NewMainMenu.keyboard
+        )
+    elif message.text == "📇 Список ближайших игр":
+        all_games_response = requests.get(config.TABLE_API.token)
+        all_games_response.encoding = "utf-8"
+        all_games_data = all_games_response.json()
+        games_keyboard, _ = helpers.prepare_games_list_keyboard(all_games_data)
+        bot.send_message(
+            chat_id=message.chat.id,
+            text="Вот список ближайших игр",
+            reply_markup=games_keyboard
+        )
+    else:
+        all_games_response = requests.get(config.TABLE_API.token)
+        all_games_response.encoding = "utf-8"
+        all_games_data = all_games_response.json()
+        games_keyboard, events_list = helpers.prepare_games_list_keyboard(all_games_data)
+        events_names = events_list.keys()
+        if message.text in events_names:
+            current_event = events_list.get(message.text)
+            print(f"{current_event=}")
+            msg = f"<b><u>Инфо об игре</u></b>: \n<b>Тема:</b> {current_event.get("Что")} \n<b>Локация:</b> {current_event.get("Где")} \n<b>Дата и время:</b> {current_event.get("Когда")} \n<b>Состав:</b>\n\t{"\n\t".join(current_event.get("Состав").split("\n"))}"
+            bot.send_message(
+                chat_id=message.chat.id,
+                text=msg,
+                reply_markup=keyboards.NewMainMenu.keyboard,
+                parse_mode="HTML"
+            )
+        
 
 @bot.message_handler(commands=['menu'])
 def menu(message):

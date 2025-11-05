@@ -23,6 +23,13 @@ class MainMenu:
     keyboard.row(useful_links, food_data)
     keyboard.row(button_notifications_on, button_notifications_off)
 
+class NewMainMenu:
+    keyboard = ReplyKeyboardMarkup()
+    games_table = KeyboardButton("🗂 Таблица игр в GoogleSheets")
+    games_calendar = KeyboardButton("📇 Список ближайших игр")
+    keyboard.row(games_table)
+    keyboard.row(games_calendar)
+
 
 class MainMenuForAdmins:
     keyboard = ReplyKeyboardMarkup()
