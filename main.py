@@ -51,7 +51,14 @@ def handle_text(message):
         if message.text in events_names:
             current_event = events_list.get(message.text)
             formatted_composition = '\n\t'.join(current_event.get("Состав").split("\n"))
-            msg = f'<b><u>Инфо об игре</u></b>: \n<b>Тема:</b> {current_event.get("Что")} \n<b>Локация:</b> {current_event.get("Где")} \n<b>Дата и время:</b> {current_event.get("Когда")} \n<b>Состав:</b>\n\t{formatted_composition}'
+            msg = (
+                f"<b><u>Инфо об игре</u></b>:\n"
+                f"<b>Тема:</b> {current_event.get('Что')}\n"
+                f"<b>Локация:</b> {current_event.get('Где')}\n"
+                f"<b>Дата и время:</b> {current_event.get('Когда')}\n"
+                f"<b>Состав:</b>\n"
+                f"\t{formatted_composition}"
+            )
             bot.send_message(
                 chat_id=message.chat.id,
                 text=msg,
