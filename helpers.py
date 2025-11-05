@@ -3,6 +3,7 @@
 import config
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 import datetime
+import requests
 
 bot = config.bot
 
@@ -29,3 +30,11 @@ def prepare_games_list_keyboard(games_json: dict) -> tuple[ReplyKeyboardMarkup, 
             count_games += 1
     keyboard.row(KeyboardButton("Главное меню"))
     return keyboard, events_data
+
+
+def get_games_schedule_data() -> tuple[ReplyKeyboardMarkup, dict]:
+    all_games_response = requests.get(config.TABLE_API.token)
+    all_games_response.encoding = "utf-8"
+    all_games_data = all_games_response.json()
+    games_keyboard, events_list = prepare_games_list_keyboard(all_games_data)
+    return games_keyboard, events_list
