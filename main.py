@@ -14,7 +14,7 @@ def start(message):
     bot.send_message(
         chat_id=message.chat.id,
         text="Выберите функцию",
-        reply_markup=keyboards.NewMainMenu.keyboard
+        reply_markup=keyboards.MainMenu.keyboard
     )
 
 
