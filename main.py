@@ -36,6 +36,7 @@ def echo_games(message):
         parse_mode="HTML"
     )
 
+
 @bot.message_handler(commands=["table"])
 def echo_table(message):
     prepared_answer = f"Тебе нужна ссылка на таблицу?\n <a href='{constants.Links.team_table}'>Держи!</a>"
